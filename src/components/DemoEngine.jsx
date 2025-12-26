@@ -37,6 +37,7 @@ const DemoEngine = () => {
 
   // Touch gesture support
   const touchStartX = useRef(null);
+  const previousStepRef = useRef(null);
 
   // Mobile detection
   useEffect(() => {
@@ -224,15 +225,52 @@ const DemoEngine = () => {
       }
     }
 
-    // Stop audio when changing steps (except step 0)
-    if (currentStep.id !== 0 && audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+    const t = setTimeout(() => setShowBubble(true), currentStep.delay);
+    return () => clearTimeout(t);
+  }, [currentStep]);
+
+  // Auto-manage per-step audio: pause prior audio and autoplay when a step defines audioSrc (except step 0 which is opt-in)
+  useEffect(() => {
+    const prevStep = previousStepRef.current;
+    const audio = audioRef.current;
+    let playTimeout;
+
+    // Pause audio from the previous step if we left it
+    if (audio && prevStep && prevStep.audioSrc && prevStep.id !== currentStep.id) {
+      audio.pause();
+      audio.currentTime = 0;
       setIsAudioPlaying(false);
     }
 
-    const t = setTimeout(() => setShowBubble(true), currentStep.delay);
-    return () => clearTimeout(t);
+    // Autoplay for steps with audio (excluding step 0 which uses the welcome choice flow)
+    if (audio && currentStep.audioSrc && currentStep.id !== 0) {
+      const targetSrc = `${currentStep.audioSrc}?v=${currentStep.id}`;
+      const currentSrc = audio.src || "";
+      const needsSrcUpdate = !currentSrc.includes(targetSrc);
+      if (needsSrcUpdate) {
+        audio.src = targetSrc;
+        audio.load();
+      }
+
+      // Align audio start with the visual delay for Step 1 so narration and UI appear together
+      const delayBeforePlay = currentStep.id === 1 ? (currentStep.delay || 0) : 0;
+      playTimeout = setTimeout(() => {
+        audio
+          .play()
+          .then(() => setIsAudioPlaying(true))
+          .catch((err) => {
+            console.error("Audio autoplay failed:", err);
+            setIsAudioPlaying(false);
+          });
+      }, delayBeforePlay);
+    } else if (!currentStep.audioSrc) {
+      setIsAudioPlaying(false);
+    }
+
+    previousStepRef.current = currentStep;
+    return () => {
+      if (playTimeout) clearTimeout(playTimeout);
+    };
   }, [currentStep]);
 
   // Step 17 tooltip timing
@@ -559,6 +597,16 @@ const DemoEngine = () => {
         fontFamily: "'Segoe UI', 'Helvetica Neue', sans-serif",
       }}
     >
+      {/* Hidden audio element for steps with narration (non-step-0); step 0 uses AlertPopup's audio rendering */}
+      {currentStep.id !== 0 && currentStep.audioSrc && (
+        <audio
+          ref={audioRef}
+          src={`${currentStep.audioSrc}?v=${currentStep.id}`}
+          preload="auto"
+          style={{ display: "none" }}
+        />
+      )}
+
       {/* TallyConnect Logo - Top Left (Responsive to fullscreen and mobile) */}
       <img
         src="/TallyConnect-Logo.png"
@@ -948,8 +996,8 @@ const DemoEngine = () => {
             </div>
           )}
 
-          {/* Spotlight Tutorial for Step 1 - NEW PULLEY-STYLE DESIGN */}
-          {showBubble && currentStep.id === 1 && currentStep.spotlightTutorial && (
+          {/* Spotlight Tutorial for Step 1, 2, 3, 4, 5, 6, 7 */}
+          {showBubble && (currentStep.id === 1 || currentStep.id === 2 || currentStep.id === 3 || currentStep.id === 4 || currentStep.id === 5 || currentStep.id === 6 || currentStep.id === 7) && currentStep.spotlightTutorial && (
             <>
               <SpotlightOverlay
                 x={H.x}
@@ -973,15 +1021,17 @@ const DemoEngine = () => {
                 height={H.height}
                 scaleX={scaleX}
                 scaleY={scaleY}
+                containerWidth={imageWidth}
+                containerHeight={imageHeight}
                 isFirstStep={currentStep.id === 0}
                 isLastStep={currentStepIndex === demoSteps.length - 1}
               />
             </>
           )}
 
-          {/* Regular Highlight (bubble animation) for Steps 2+ */}
+          {/* Regular Highlight (bubble animation) for Steps 3+ (skip steps with spotlight/card) */}
           {showBubble &&
-            currentStep.id > 1 &&
+            currentStep.id > 2 &&
             (!currentStep.highlightType ||
               (currentStep.highlightType !== "border" &&
                 currentStep.highlightType !== "none")) && (
@@ -993,38 +1043,8 @@ const DemoEngine = () => {
               />
             )}
 
-          {/* Tooltip for Step 2 - Excel Sheet Icon (top position) */}
-          {showBubble && currentStep.id === 2 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click here to open Excel-Sheet"
-              position="top"
-              stepId={2}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Expiration Date on Step 2 (left position) */}
-          {showBubble && currentStep.id === 2 && adjExpHighlight && (
-            <Tooltip
-              x={adjExpHighlight.x}
-              y={adjExpHighlight.y}
-              width={adjExpHighlight.width}
-              height={adjExpHighlight.height}
-              text="Check Your Software Expiration Date"
-              position="left"
-              scaleX={scaleX}
-              scaleY={scaleY}
-            />
-          )}
-
           {/* Tooltip for Step 3 - Open PDF Converter (below position) */}
-          {showBubble && currentStep.id === 3 && (
+          {showBubble && currentStep.id === 3 && currentStep.highlightType !== "none" && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1040,7 +1060,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 4 - Browse Button (left position) */}
-          {showBubble && currentStep.id === 4 && (
+          {showBubble && currentStep.id === 4 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1056,7 +1076,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 5 - File Selection Border (right position, instruction style) */}
-          {showBubble && currentStep.id === 5 && (
+          {showBubble && currentStep.id === 5 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1072,7 +1092,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 6 - Open Button (below position) */}
-          {showBubble && currentStep.id === 6 && (
+          {showBubble && currentStep.id === 6 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1088,7 +1108,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 7 - Import Button (right position) */}
-          {showBubble && currentStep.id === 7 && (
+          {showBubble && currentStep.id === 7 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}

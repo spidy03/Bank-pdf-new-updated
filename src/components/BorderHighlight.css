@@ -3,10 +3,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 1px #FFD700;
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px #2563eb;
   }
+
   50% {
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.25);
   }
 }

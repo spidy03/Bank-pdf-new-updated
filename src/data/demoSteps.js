@@ -20,7 +20,7 @@ const demoSteps = [
     message:
       "A powerful PDF bank statement converter with precision and flexibility:\n\n✓ Custom page & area selection for accurate conversion\n✓ Smart transaction table detection and extraction\n✓ Auto-detect ledger names from transaction narration\n✓ Auto-identify voucher type (Receipt, Payment, Contra)\n\nLet's explore how to seamlessly convert your bank statements into TallyPrime with TallyConnects Bank-PDF Template.",
     buttonText: "Start Demo",
-    audioSrc: "/audio/step1-welcome-narration.mp3",
+    audioSrc: "/audio/step0-welcome-narration.mp3",
     showAudioNotification: true,
   },
   {
@@ -28,8 +28,9 @@ const demoSteps = [
     image: "/dashboard.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
-    delay: 1000,  // 1 second delay before showing spotlight for smooth transition
+    instruction: "This is the PDF-to-Tally button. Click here to check your subscription details and validity. Click Next to proceed.",
+    delay: 300,
+    audioSrc: "/audio/Step1.mp3",
     highlight: {
       x: 810,    // PDF to Tally button area
       y: 184,    // Near top-right area
@@ -38,7 +39,7 @@ const demoSteps = [
     },
     spotlightTutorial: {
       title: "PDF to Tally Button",
-      description: "This is the PDF to Tally button. Click here to check your subscription details and access the PDF import feature for seamless data transfer into Tally.",
+      description: "This is the PDF-to-Tally button. Click here to check your subscription details and validity. Click Next to proceed.",
       position: "left",
     }
   },
@@ -47,19 +48,18 @@ const demoSteps = [
     image: "/tally-settings.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 760,  // Original image height
-    instruction: "",
-    delay: 0,
+    instruction: "Subscription detail — check the validity date for this feature before proceeding.",
+    delay: 300,
     highlight: {
-      x: 665,    // Excel sheet icon x position (on taskbar)
-      y: 710,     // Excel sheet icon y position (on taskbar)
-      width: 50,
-      height: 50
+      x: 140,    // Subscription expiration badge x position
+      y: 340,    // Subscription expiration badge y position
+      width: 450,
+      height: 100
     },
-    expirationHighlight: {
-      x: 168,    // Expiration Date field x position
-      y: 242,    // Expiration Date field y position
-      width: 160,
-      height: 25
+    spotlightTutorial: {
+      title: "Subscription detail",
+      description: "Here you can check the expiration date for this feature. The current validity shows: valid till 26 Jul 2026.",
+      position: "right"
     }
   },
   {
@@ -67,17 +67,19 @@ const demoSteps = [
     image: "/Excel-Open-pdf-Converter.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Launch the cloud-based PDF converter to process your bank statements. Click the \"Open PDF Converter\" button to open the converter.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    highlightType: "none",  // Disable tooltip and bubble highlight for this step
     highlight: {
-      x: 1045,   // Open PDF Converter button x position
+      x: 1015,   // Open PDF Converter button x position
       y: 235,    // Open PDF Converter button y position
-      width: 120,
+      width: 180,
       height: 25
     },
-    tooltipSettings: {
-      position: "below",  // Tooltip below the button
-      arrowDirection: "up"  // Arrow pointing up towards button
+    spotlightTutorial: {
+      title: "Open PDF Converter",
+      description: "Launch the cloud-based PDF converter to process your bank statements. Click the \"Open PDF Converter\" button to open the converter.",
+      position: "left"
     }
   },
   {
@@ -85,17 +87,19 @@ const demoSteps = [
     image: "/Converter-preview.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Select your bank PDF by clicking the 'Browse' button to upload it to the converter.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    highlightType: "none",  // Use spotlight overlay instead of bubble highlight
     highlight: {
       x: 212,    // Browse button x position
       y: 203,    // Browse button y position
       width: 65,
-      height: 35
+      height: 30
     },
-    tooltipSettings: {
-      position: "right",  // Tooltip left of the button
-      arrowDirection: "right"  // Arrow pointing right towards button
+    spotlightTutorial: {
+      title: "Select Your Bank PDF",
+      description: "Click the 'Browse' button to choose your bank PDF and load it into the converter.",
+      position: "right"  // Card on the right of the spotlight
     }
   },
   {
@@ -103,18 +107,19 @@ const demoSteps = [
     image: "/file-selection.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Select the highlighted bank PDF file to prepare it for conversion in the following steps.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
-    highlightType: "border",  // Using new border-highlight module
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 400,    // Bank of Baroda file x position
       y: 355,    // Bank of Baroda file y position
       width: 380,
       height: 26
     },
-    tooltipSettings: {
-      position: "right",  // Tooltip right of the border
-      arrowDirection: "left"  // Arrow pointing left towards border
+    spotlightTutorial: {
+      title: "Choose the PDF File",
+      description: "Select the highlighted bank PDF file to prepare it for conversion in the following steps.",
+      position: "right"  // Card on the right of the spotlight
     }
   },
   {
@@ -122,17 +127,19 @@ const demoSteps = [
     image: "/open-pdf-file.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Open the selected bank PDF by clicking the 'Open' button to continue the import flow.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 855,    // Open button x position
-      y: 550,    // Open button y position
-      width: 80,
-      height: 30
+      x: 272,    // Open button x position
+      y: 520,    // Open button y position
+      width: 746,
+      height: 57
     },
-    tooltipSettings: {
-      position: "below",  // Tooltip below the button
-      arrowDirection: "up"  // Arrow pointing up towards button
+    spotlightTutorial: {
+      title: "Open the PDF",
+      description: "Click the 'Open' button to load the selected bank PDF and move to the next step.",
+      position: "top-right"  // Card above and to the right of the spotlight
     }
   },
   {
@@ -140,17 +147,19 @@ const demoSteps = [
     image: "/import-pdf.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Import the selected bank PDF into the converter by clicking the 'Import' button.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 700,    // Import button x position
-      y: 200,    // Import button y position
-      width: 65,
+      x: 205,    // Import button x position
+      y: 205,    // Import button y position
+      width: 560,
       height: 35
     },
-    tooltipSettings: {
-      position: "right",  // Tooltip right of the button
-      arrowDirection: "left"  // Arrow pointing left towards button
+    spotlightTutorial: {
+      title: "Import PDF Data",
+      description: "Click the 'Import' button to bring the selected bank PDF into the converter.",
+      position: "right"  // Card on the right of the spotlight
     }
   },
   {

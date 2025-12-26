@@ -1,7 +1,7 @@
 import React from "react";
 import "./BorderHighlight.css";
 
-const BorderHighlight = ({ x, y, width, height, borderColor = "#FFD700", borderWidth = 3 }) => {
+const BorderHighlight = ({ x, y, width, height, borderColor = "#2563eb", borderWidth = 3 }) => {
   return (
     <div
       className="border-highlight"

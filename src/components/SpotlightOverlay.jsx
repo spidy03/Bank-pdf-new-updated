@@ -6,11 +6,13 @@ const SpotlightOverlay = ({ x, y, width, height, scaleX = 1, scaleY = 1 }) => {
   const spotWidth = width * scaleX;
   const spotHeight = height * scaleY;
 
-  const padding = 8;
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  const avgScale = (scaleX + scaleY) / 2 || 1;
+  const padding = clamp(8 * avgScale, 6, 14);
   const spotlightX = spotX - padding;
   const spotlightY = spotY - padding;
-  const spotlightWidth = spotWidth + (padding * 2);
-  const spotlightHeight = spotHeight + (padding * 2);
+  const spotlightWidth = spotWidth + padding * 2;
+  const spotlightHeight = spotHeight + padding * 2;
 
   return (
     <div
@@ -63,7 +65,7 @@ const SpotlightOverlay = ({ x, y, width, height, scaleX = 1, scaleY = 1 }) => {
             boxSizing: "border-box",
           }}
         >
-          {/* Gradient border with square corners */}
+          {/* Gradient border with square corners, aligned to the blue system */}
           <div
             style={{
               position: "absolute",
@@ -72,12 +74,12 @@ const SpotlightOverlay = ({ x, y, width, height, scaleX = 1, scaleY = 1 }) => {
               right: 0,
               bottom: 0,
               borderRadius: "0px",
-              border: "3px solid transparent",
-              background: "linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%) border-box",
+              border: `${clamp(2.5 * avgScale, 2, 3.5)}px solid transparent`,
+              background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #60a5fa 100%) border-box",
               WebkitMask: "linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)",
               WebkitMaskComposite: "xor",
               maskComposite: "exclude",
-              boxShadow: "0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(236, 72, 153, 0.2)",
+              boxShadow: "0 0 14px rgba(37, 99, 235, 0.45), 0 0 28px rgba(96, 165, 250, 0.24), inset 0 0 12px rgba(37, 99, 235, 0.16)",
             }}
           />
         </div>
