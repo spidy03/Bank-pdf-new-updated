@@ -1,0 +1,12 @@
+.border-highlight {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 1px #FFD700;
+  }
+  50% {
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+  }
+}
