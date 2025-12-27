@@ -8,6 +8,7 @@ const InstructionCard = ({
   currentStep,
   totalSteps,
   position = "bottom",
+  gapOffset = 0,
   x,
   y,
   width,
@@ -85,32 +86,34 @@ const InstructionCard = ({
   let arrowY = 0;
   let arrowRotation = 0;
 
+  const gap = 20 + gapOffset;
+
   if (position === "bottom") {
     cardX = spotX + spotWidth / 2 - cardWidth / 2;
-    cardY = spotY + spotHeight + 20;
+    cardY = spotY + spotHeight + gap;
     arrowX = cardWidth / 2 - arrowSize;
     arrowY = -arrowSize;
     arrowRotation = 0;
   } else if (position === "top") {
     cardX = spotX + spotWidth / 2 - cardWidth / 2;
-    cardY = spotY - estimatedCardHeight - 20;
+    cardY = spotY - estimatedCardHeight - gap;
     arrowX = cardWidth / 2 - arrowSize;
     arrowY = "100%";
     arrowRotation = 180;
   } else if (position === "top-right") {
-    cardX = spotX + spotWidth - cardWidth + 20;
-    cardY = spotY - estimatedCardHeight - 20;
+    cardX = spotX + spotWidth - cardWidth + gap;
+    cardY = spotY - estimatedCardHeight - gap;
     arrowX = cardWidth - arrowSize * 2;
     arrowY = "100%";
     arrowRotation = 180;
   } else if (position === "left") {
-    cardX = spotX - cardWidth - 20;
+    cardX = spotX - cardWidth - gap;
     cardY = spotY + spotHeight / 2 - estimatedCardHeight / 2;
     arrowX = cardWidth - 2;
     arrowY = estimatedCardHeight / 2 - arrowSize;
     arrowRotation = 90;
   } else if (position === "right") {
-    cardX = spotX + spotWidth + 20;
+    cardX = spotX + spotWidth + gap;
     cardY = spotY + spotHeight / 2 - estimatedCardHeight / 2;
     arrowX = -arrowSize - 2;
     arrowY = estimatedCardHeight / 2 - arrowSize;

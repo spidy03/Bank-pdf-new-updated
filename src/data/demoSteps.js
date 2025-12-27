@@ -28,7 +28,7 @@ const demoSteps = [
     image: "/dashboard.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "This is the PDF-to-Tally button. Click here to check your subscription details and validity. Click Next to proceed.",
+    instruction: "This is the PDF-to-Tally button. Click here to check your subscription details and validity.",
     delay: 300,
     audioSrc: "/audio/Step1.mp3",
     highlight: {
@@ -39,7 +39,7 @@ const demoSteps = [
     },
     spotlightTutorial: {
       title: "PDF to Tally Button",
-      description: "This is the PDF-to-Tally button. Click here to check your subscription details and validity. Click Next to proceed.",
+      description: "This is the PDF-to-Tally button. Click here to check your subscription details and validity.",
       position: "left",
     }
   },
@@ -50,6 +50,7 @@ const demoSteps = [
     imageHeight: 760,  // Original image height
     instruction: "Subscription detail — check the validity date for this feature before proceeding.",
     delay: 300,
+    audioSrc: "/audio/Step2.mp3",
     highlight: {
       x: 140,    // Subscription expiration badge x position
       y: 340,    // Subscription expiration badge y position
@@ -69,6 +70,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Launch the cloud-based PDF converter to process your bank statements. Click the \"Open PDF Converter\" button to open the converter.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    audioSrc: "/audio/Step3.mp3",
     highlightType: "none",  // Disable tooltip and bubble highlight for this step
     highlight: {
       x: 1015,   // Open PDF Converter button x position
@@ -89,6 +91,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Select your bank PDF by clicking the 'Browse' button to upload it to the converter.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    audioSrc: "/audio/Step4.mp3",
     highlightType: "none",  // Use spotlight overlay instead of bubble highlight
     highlight: {
       x: 212,    // Browse button x position
@@ -109,6 +112,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Select the highlighted bank PDF file to prepare it for conversion in the following steps.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    audioSrc: "/audio/Step5.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 400,    // Bank of Baroda file x position
@@ -167,17 +171,19 @@ const demoSteps = [
     image: "/autodetect-table.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Detect table data automatically by clicking the 'Autodetect Tables' button.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 550,    // Autodetect Tables button x position
+      x: 515,    // Autodetect Tables button x position
       y: 125,    // Autodetect Tables button y position
-      width: 75,
+      width: 130,
       height: 30
     },
-    tooltipSettings: {
-      position: "below",  // Tooltip below the button
-      arrowDirection: "up"  // Arrow pointing up towards button
+    spotlightTutorial: {
+      title: "Autodetect Tables",
+      description: "Click 'Autodetect Tables' to scan the PDF and extract table data automatically.",
+      position: "right"  // Card on the right of the spotlight
     }
   },
   {
@@ -185,14 +191,19 @@ const demoSteps = [
     image: "/step-9-1.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Click on 'Please Select Bank' to choose your bank name from the list.",
     delay: 200,
-    highlightType: "border",  // Using border-highlight for "Please Select Bank"
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 810,    // "Please Select Bank" text x position (300px from right)
+      x: 818,    // "Please Select Bank" text x position (300px from right)
       y: 120,    // "Please Select Bank" text y position (100px from top)
-      width: 330,
+      width: 315,
       height: 40
+    },
+    spotlightTutorial: {
+      title: "Select Bank",
+      description: "Click on 'Please Select Bank' to choose your bank name from the list.",
+      position: "left"  // Card on the left of the spotlight
     }
   },
   {
@@ -200,14 +211,19 @@ const demoSteps = [
     image: "/Select-bank.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Our PDF bank name is Bank of Baroda, so select 'Bank of Baroda Print Format 2' from the list.",
     delay: 200,
-    highlightType: "border",  // Using border-highlight for the transaction row
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 810,    // Red highlighted transaction area x position
-      y: 420,    // Red highlighted transaction area y position
-      width: 330,
-      height: 30
+      x: 815,    // Bank format option x position
+      y: 425,    // Bank format option y position
+      width: 310,
+      height: 20
+    },
+    spotlightTutorial: {
+      title: "Choose Bank Format",
+      description: "Our PDF bank name is Bank of Baroda, so select 'Bank of Baroda Print Format 2' from the list.",
+      position: "left"  // Card on the left of the spotlight (overlay on the right)
     }
   },
   {
@@ -215,13 +231,19 @@ const demoSteps = [
     image: "/Preview Pdf.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Select Preview Data to proceed. Ensure the selected bank format matches your bank PDF by comparing it with the preview image provided.",
     delay: 200,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 1155,   // Preview Pdf button x position (top right)
+      x: 580,   // Preview Pdf button x position (top right)
       y: 122,    // Preview Pdf button y position (top right)
-      width: 70,
-      height: 35
+      width: 660,
+      height: 70
+    },
+    spotlightTutorial: {
+      title: "Preview Data",
+      description: "Select Preview Data to proceed. Ensure the selected bank format matches your bank PDF by comparing it with the preview image provided.",
+      position: "left"  // Card on the left, overlay on the right
     }
   },
   {
@@ -229,13 +251,19 @@ const demoSteps = [
     image: "/table-data.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Click 'Send to Template' to move your bank PDF data into the TallyConnects template for the next steps.",
     delay: 200,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 385,    // Send to Template button x position (top center)
-      y: 128,    // Send to Template button y position (top center)
-      width: 80,
-      height: 28
+      x: 355,    // Send to Template button x position (top center)
+      y: 123,    // Send to Template button y position (top center)
+      width: 140,
+      height: 30
+    },
+    spotlightTutorial: {
+      title: "Send to Template",
+      description: "Click 'Send to Template' to move your bank PDF data into the TallyConnects template for the next steps.",
+      position: "right"  // Card on the right, spotlight on the left
     }
   },
   {
@@ -243,13 +271,19 @@ const demoSteps = [
     image: "/Close-popup.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Click the Close button to exit this popup and move on to reviewing the data in the Excel templates.",
     delay: 200,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 815,   // Close button x position (top right corner)
       y: 200,      // Close button y position (top right corner)
-      width: 45,
+      width: 55,
       height: 28
+    },
+    spotlightTutorial: {
+      title: "Close the Popup",
+      description: "Click the Close button to dismiss this popup and continue to verify the data in the Excel templates.",
+      position: "left"  // Card on the left, overlay on the right
     }
   },
   {
@@ -257,13 +291,19 @@ const demoSteps = [
     image: "/open-excel.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Click the Excel icon on your taskbar to open the TallyConnect template, then proceed to the next step to import your data.",
     delay: 200,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 635,   // Open Excel Sheet button x position
-      y: 685,   // Open Excel Sheet button y position
+      x: 635,   // Excel icon x position (taskbar)
+      y: 680,   // Excel icon y position (taskbar)
       width: 45,
       height: 28
+    },
+    spotlightTutorial: {
+      title: "Open Excel Template",
+      description: "Click the Excel icon on your taskbar to open the TallyConnect template, then proceed to the next step to import your data.",
+      position: "top"  // Card on top, spotlight below (overlay bottom)
     }
   },
   {
@@ -271,13 +311,19 @@ const demoSteps = [
     image: "/Import-pdf-data.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Click 'Import PDF Bank data' to import your bank PDF data into the Excel template. This action fetches all data and places them into their proper columns.",
     delay: 200,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 775,   // Import PDF Bank data button x position
+      x: 735,   // Import PDF Bank data button x position
       y: 230,   // Import PDF Bank data button y position
-      width: 120,
-      height: 25
+      width: 200,
+      height: 35
+    },
+    spotlightTutorial: {
+      title: "Import PDF Bank Data",
+      description: "Click 'Import PDF Bank data' to import your bank PDF data into the Excel template. This action fetches all data and places them into their proper columns.",
+      position: "left"  // Card on the left, spotlight on the right
     }
   },
   {
@@ -285,13 +331,19 @@ const demoSteps = [
     image: "/Successful-records.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Review how many entries were processed successfully in the template, then click OK to close this confirmation and continue.",
     delay: 500,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 690,   // OK button x position
-      y: 420,   // OK button y position
-      width: 45,
-      height: 25
+      x: 540,   // OK button x position
+      y: 320,   // OK button y position
+      width: 210,
+      height: 120
+    },
+    spotlightTutorial: {
+      title: "Successful Records",
+      description: "This popup shows how many entries were processed successfully in the template. Click OK to close it and move to the next step.",
+      position: "right"  // Card on the right, spotlight on the left
     }
   },
   {
@@ -299,19 +351,19 @@ const demoSteps = [
     image: "/Verify-party-ledger.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "This converter auto-extracts ledger names from your bank PDF descriptions so accounts map correctly. Review the Ledger Name column, then click Next to continue.",
     delay: 200,
-    highlightLeft: {
-      x: 290,   // Description column x position
-      y: 425,   // Description column y position
-      width: 250,
-      height: 280
+    highlightType: "none",  // Use spotlight overlay and instruction card
+    highlight: {
+      x: 10,   // Ledger Name column x position
+      y: 335,  // Ledger Name column y position
+      width: 1250,
+      height: 340
     },
-    highlightRight: {
-      x: 1080,  // Ledger Name column x position
-      y: 425,   // Ledger Name column y position
-      width: 250,
-      height: 280
+    spotlightTutorial: {
+      title: "Ledger Names Auto-Mapped",
+      description: "This PDF converter automatically extracts ledger names from your bank PDF based on transaction description details and places them directly into the Ledger Name column.",
+      position: "top-right"  // Card on top-right, spotlight below (overlay bottom)
     }
   },
   {
@@ -319,13 +371,19 @@ const demoSteps = [
     image: "/Voucher-type.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Use the Create Receipt/Payment Vouchers button to label each entry as a receipt or payment directly in the template.",
     delay: 200,
+    highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
-      x: 518,   // Create Receipt /Payment Vouchers button x position
+      x: 450,   // Create Receipt /Payment Vouchers button x position
       y: 285,   // Create Receipt /Payment Vouchers button y position
-      width: 135,
+      width: 280,
       height: 25
+    },
+    spotlightTutorial: {
+      title: "Mark Receipt/Payment Voucher",
+      description: "Click Create Receipt/Payment Vouchers to automatically tag each entry as a receipt or payment based on the credit or debit amount in the template using this advanced feature.",
+      position: "right"  // Card on the right, spotlight on the left
     }
   },
   {
@@ -333,14 +391,19 @@ const demoSteps = [
     image: "/Voucher-Created.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "The Receipt and Payment voucher types have been successfully created in the template. The next step is to create the Contra voucher type.",
     delay: 200,
     highlightType: "none",
     highlight: {
       x: 500,   // Voucher created confirmation area x position
       y: 350,   // Voucher created confirmation area y position
-      width: 280,
-      height: 80
+      width: 500,
+      height: 340
+    },
+    spotlightTutorial: {
+      title: "Receipt/Payment Voucher Created",
+      description: "The Receipt and Payment voucher types have been successfully created in the template. The next step is to create the Contra voucher type.",
+      position: "left"  // Card on the left, spotlight on the right
     }
   },
   {
@@ -348,20 +411,25 @@ const demoSteps = [
     image: "/Cash-bank.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Receipts and Payments are now created in the template. Next, create a Contra voucher type using the dedicated button.",
     delay: 200,
     highlightType: "none",
     highlight: {
-      x: 650,   // Cash/Bank ledger column x position
-      y: 350,   // Cash/Bank ledger column y position
-      width: 200,
-      height: 200
+      x: 350,   // Cash/Bank ledger column x position
+      y: 280,   // Cash/Bank ledger column y position
+      width: 190,
+      height: 40
     },
     highlightButton: {
       x: 640,   // Create Contra Voucher button x position
       y: 600,   // Create Contra Voucher button y position
       width: 220,
       height: 40
+    },
+    spotlightTutorial: {
+      title: "Contra Voucher Creation",
+      description: "To create a Contra voucher automatically, enter your existing bank or cash ledger in the Ledger Name column of the template, then click Create Contra Voucher to generate the Contra voucher types in the template.",
+      position: "top-right"  // Card top-right of the spotlight
     }
   },
   {
@@ -369,14 +437,19 @@ const demoSteps = [
     image: "/Contra-created.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Contra voucher type has been created from the template after clicking Create Contra Voucher.",
     delay: 200,
     highlightType: "none",
     highlight: {
-      x: 700,   // Contra voucher created confirmation area x position
-      y: 350,   // Contra voucher created confirmation area y position
-      width: 200,
-      height: 150
+      x: 335,   // Contra voucher created confirmation area x position
+      y: 340,   // Contra voucher created confirmation area y position
+      width: 430,
+      height: 350
+    },
+    spotlightTutorial: {
+      title: "Contra Voucher Created",
+      description: "This step confirms the Contra voucher type was generated in the template after clicking Create Contra Voucher, proving the process completed successfully.",
+      position: "right"  // Card on the right, spotlight on the left
     }
   },
   {

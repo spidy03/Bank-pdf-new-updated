@@ -296,40 +296,6 @@ const DemoEngine = () => {
     };
   }, [currentStep, showBubble]);
 
-  // Step 19 tooltip timing
-  useEffect(() => {
-    if (currentStep.id !== 19 || !showBubble) return;
-
-    // Show tooltip 1 immediately
-    setShowTooltip1(true);
-
-    // Show tooltip 2 after 3 seconds
-    const t2 = setTimeout(() => {
-      setShowTooltip2(true);
-    }, 3000);
-
-    return () => {
-      clearTimeout(t2);
-    };
-  }, [currentStep, showBubble]);
-
-  // Step 20 tooltip timing
-  useEffect(() => {
-    if (currentStep.id !== 20 || !showBubble) return;
-
-    // Show tooltip 1 immediately
-    setShowTooltip1(true);
-
-    // Show tooltip 2 after 2 seconds
-    const t2 = setTimeout(() => {
-      setShowTooltip2(true);
-    }, 2000);
-
-    return () => {
-      clearTimeout(t2);
-    };
-  }, [currentStep, showBubble]);
-
   // Auto-advance after 10 seconds of inactivity
   useEffect(() => {
     if (!showBubble) {
@@ -996,8 +962,8 @@ const DemoEngine = () => {
             </div>
           )}
 
-          {/* Spotlight Tutorial for Step 1, 2, 3, 4, 5, 6, 7 */}
-          {showBubble && (currentStep.id === 1 || currentStep.id === 2 || currentStep.id === 3 || currentStep.id === 4 || currentStep.id === 5 || currentStep.id === 6 || currentStep.id === 7) && currentStep.spotlightTutorial && (
+          {/* Spotlight Tutorial for spotlight-enabled steps */}
+          {showBubble && currentStep.spotlightTutorial && (
             <>
               <SpotlightOverlay
                 x={H.x}
@@ -1015,6 +981,15 @@ const DemoEngine = () => {
                 currentStep={currentStepIndex + 1}
                 totalSteps={demoSteps.length}
                 position={currentStep.spotlightTutorial.position}
+                gapOffset={
+                  currentStep.id === 14
+                    ? 20
+                    : currentStep.id === 17
+                      ? 40 // 20px base + 20px extra for step 17
+                      : currentStep.id === 20
+                        ? 380 // push card further right/up for step 20 top-right placement
+                        : 0
+                }
                 x={H.x}
                 y={H.y}
                 width={H.width}
@@ -1123,8 +1098,8 @@ const DemoEngine = () => {
             />
           )}
 
-          {/* Tooltip for Step 8 - Autodetect Tables Button (below position) */}
-          {showBubble && currentStep.id === 8 && (
+          {/* Tooltip for Step 8 - Autodetect Tables button (below position) */}
+          {showBubble && currentStep.id === 8 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1139,104 +1114,8 @@ const DemoEngine = () => {
             />
           )}
 
-          {/* Tooltip for Step 9 - Select Bank Format (left position) */}
-          {showBubble && currentStep.id === 9 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Select Bank Format"
-              position="left"
-              stepId={9}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 10 - Transaction Row Selection (left position) */}
-          {showBubble && currentStep.id === 10 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Select this bank format"
-              position="left"
-              stepId={10}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 11 - Preview Pdf Button (top position) */}
-          {showBubble && currentStep.id === 11 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to view data"
-              position="top"
-              stepId={11}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 12 - Send to Template Button (right position) */}
-          {showBubble && currentStep.id === 12 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to Send data"
-              position="right"
-              stepId={12}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 13 - Close Button (left position) */}
-          {showBubble && currentStep.id === 13 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Close to continue"
-              position="left"
-              stepId={13}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 14 - Open Excel Sheet Button (top position) */}
-          {showBubble && currentStep.id === 14 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Open Excel Sheet"
-              position="top"
-              stepId={14}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
           {/* Tooltip for Step 15 - Import PDF Bank data Button (top position) */}
-          {showBubble && currentStep.id === 15 && (
+          {showBubble && currentStep.id === 15 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1252,7 +1131,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 16 - OK Button (left position) */}
-          {showBubble && currentStep.id === 16 && (
+          {showBubble && currentStep.id === 16 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1323,7 +1202,7 @@ const DemoEngine = () => {
             )}
 
           {/* Tooltip for Step 18 - Create Receipt /Payment Vouchers Button (left position with right arrow) */}
-          {showBubble && currentStep.id === 18 && (
+          {showBubble && currentStep.id === 18 && !currentStep.spotlightTutorial && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1332,99 +1211,6 @@ const DemoEngine = () => {
               text="Click to create voucher"
               position="left"
               stepId={18}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip 1 for Step 19 - Voucher Created Confirmation (left position, warning style) */}
-          {showBubble && currentStep.id === 19 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="We have successfully Create Payment/Receipt Voucher"
-              position="left"
-              stepId="19-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-            />
-          )}
-
-          {/* Tooltip 2 for Step 19 - Voucher Created Confirmation (right position, instruction style) */}
-          {showBubble && currentStep.id === 19 && showTooltip2 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Continue Create Contra Voucher"
-              position="right"
-              stepId="19-2"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip 1 for Step 20 - Cash/Bank Ledger Column (left position, warning style) */}
-          {showBubble && currentStep.id === 20 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Mentioned Created Cash and Bank Ledger in this column"
-              position="left"
-              stepId="20-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-            />
-          )}
-
-          {/* Tooltip 2 for Step 20 - Create Contra Voucher Button (above position, instruction style, 2 sec delay) */}
-          {showBubble && currentStep.id === 20 && showTooltip2 && (
-            <Tooltip
-              x={adjHighlight.x + adjHighlight.width / 2}
-              y={adjHighlight.y + adjHighlight.height + 120}
-              width={220}
-              height={40}
-              text="Click to Create Contra Voucher"
-              position="top"
-              stepId="20-2"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip 1 for Step 21 - Contra Voucher Created (right position, warning style) */}
-          {showBubble && currentStep.id === 21 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="We have successfully created contra voucher"
-              position="right"
-              stepId="21-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-            />
-          )}
-
-          {/* Tooltip 2 for Step 21 - Contra Voucher Created (left position, instruction style) */}
-          {showBubble && currentStep.id === 21 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to Continue"
-              position="left"
-              stepId="21-2"
               scaleX={scaleX}
               scaleY={scaleY}
               onNext={goNext}
