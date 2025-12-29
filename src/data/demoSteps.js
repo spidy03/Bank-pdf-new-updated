@@ -133,6 +133,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Open the selected bank PDF by clicking the 'Open' button to continue the import flow.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    audioSrc: "/audio/Step6.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 272,    // Open button x position
@@ -153,6 +154,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Import the selected bank PDF into the converter by clicking the 'Import' button.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    audioSrc: "/audio/Step7.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 205,    // Import button x position
@@ -173,6 +175,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Detect table data automatically by clicking the 'Autodetect Tables' button.",
     delay: 200,  // 0.2 second delay to allow image to load before showing animation
+    audioSrc: "/audio/Step8.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 515,    // Autodetect Tables button x position
@@ -193,6 +196,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Click on 'Please Select Bank' to choose your bank name from the list.",
     delay: 200,
+    audioSrc: "/audio/Step9.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 818,    // "Please Select Bank" text x position (300px from right)
@@ -213,6 +217,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Our PDF bank name is Bank of Baroda, so select 'Bank of Baroda Print Format 2' from the list.",
     delay: 200,
+    audioSrc: "/audio/Step10.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 815,    // Bank format option x position
@@ -233,6 +238,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Select Preview Data to proceed. Ensure the selected bank format matches your bank PDF by comparing it with the preview image provided.",
     delay: 200,
+    audioSrc: "/audio/Step11.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 580,   // Preview Pdf button x position (top right)
@@ -253,6 +259,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Click 'Send to Template' to move your bank PDF data into the TallyConnects template for the next steps.",
     delay: 200,
+    audioSrc: "/audio/Step12.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 355,    // Send to Template button x position (top center)
@@ -273,6 +280,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Click the Close button to exit this popup and move on to reviewing the data in the Excel templates.",
     delay: 200,
+    audioSrc: "/audio/Step13.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 815,   // Close button x position (top right corner)
@@ -293,6 +301,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Click the Excel icon on your taskbar to open the TallyConnect template, then proceed to the next step to import your data.",
     delay: 200,
+    audioSrc: "/audio/Step14.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 635,   // Excel icon x position (taskbar)
@@ -313,6 +322,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Click 'Import PDF Bank data' to import your bank PDF data into the Excel template. This action fetches all data and places them into their proper columns.",
     delay: 200,
+    audioSrc: "/audio/Step15.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 735,   // Import PDF Bank data button x position
@@ -333,6 +343,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Review how many entries were processed successfully in the template, then click OK to close this confirmation and continue.",
     delay: 500,
+    audioSrc: "/audio/Step16.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 540,   // OK button x position
@@ -353,6 +364,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "This converter auto-extracts ledger names from your bank PDF descriptions so accounts map correctly. Review the Ledger Name column, then click Next to continue.",
     delay: 200,
+    audioSrc: "/audio/Step17.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 10,   // Ledger Name column x position
@@ -373,6 +385,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Use the Create Receipt/Payment Vouchers button to label each entry as a receipt or payment directly in the template.",
     delay: 200,
+    audioSrc: "/audio/Step18.mp3",
     highlightType: "none",  // Use spotlight overlay and instruction card
     highlight: {
       x: 450,   // Create Receipt /Payment Vouchers button x position
@@ -393,6 +406,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "The Receipt and Payment voucher types have been successfully created in the template. The next step is to create the Contra voucher type.",
     delay: 200,
+    audioSrc: "/audio/Step19.mp3",
     highlightType: "none",
     highlight: {
       x: 500,   // Voucher created confirmation area x position
@@ -413,6 +427,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Receipts and Payments are now created in the template. Next, create a Contra voucher type using the dedicated button.",
     delay: 200,
+    audioSrc: "/audio/Step20.mp3",
     highlightType: "none",
     highlight: {
       x: 350,   // Cash/Bank ledger column x position
@@ -439,6 +454,7 @@ const demoSteps = [
     imageHeight: 720,  // Original image height
     instruction: "Contra voucher type has been created from the template after clicking Create Contra Voucher.",
     delay: 200,
+    audioSrc: "/audio/Step21.mp3",
     highlightType: "none",
     highlight: {
       x: 335,   // Contra voucher created confirmation area x position
@@ -457,14 +473,21 @@ const demoSteps = [
     image: "/alert-box.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Bank PDF data is prepared in the Excel template; next we'll import it into TallyPrime.",
     delay: 200,
+    audioSrc: "/audio/Step22.mp3",
     highlightType: "none",
     highlight: {
-      x: 0,     // No highlight needed for alert message
-      y: 0,
-      width: 0,
-      height: 0
+      x: 460,
+      y: 260,
+      width: 360,
+      height: 180,
+    },
+    spotlightTutorial: {
+      title: "Data Ready in Template",
+      description: "Your bank statement data is organized in the Excel template. Next, we'll move the same data into TallyPrime with TallyConnects Software.",
+      position: "top",
+      disableOverlay: true,
     }
   },
   {
@@ -472,13 +495,20 @@ const demoSteps = [
     image: "/Bank-Statement.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Open Bank Statement in TallyConnects to import your prepared PDF template data.",
     delay: 200,
+    audioSrc: "/audio/Step23.mp3",
+    highlightType: "none",
     highlight: {
-      x: 815,   // Bank Statement button x position (300px to right)
-      y: 280,    // Bank Statement button y position
-      width: 90,
-      height: 30
+      x: 720,   // Bank Statement button area (right side)
+      y: 230,   // Bank Statement button y position
+      width: 250,
+      height: 60
+    },
+    spotlightTutorial: {
+      title: "Open Bank Statement",
+      description: "This TallyConnects interface lets you import your bank PDF template. Click Bank Statement on the right to load your prepared data.",
+      position: "left"  // Card on the left, overlay on the right
     }
   },
   {
@@ -486,14 +516,20 @@ const demoSteps = [
     image: "/Bank-template-selection.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Choose the Bank PDF statement template and click Open to continue.",
     delay: 200,
-    // Bubble highlight (default highlightType) on Open button
+    audioSrc: "/audio/Step24.mp3",
+    highlightType: "none",
     highlight: {
-      x: 750,   // Open button x position (estimated)
-      y: 515,   // Open button y position (estimated)
-      width: 80,
-      height: 30
+      x: 110,   // Dialog/content area left side (popup)
+      y: 215,
+      width: 472,
+      height: 328
+    },
+    spotlightTutorial: {
+      title: "Select Bank PDF Template",
+      description: "A popup appears after choosing Bank Statement Feature. Select the Bank PDF statement template, then click Open to proceed.",
+      position: "right"  // Card on the right, overlay on the left
     }
   },
   {
@@ -501,14 +537,20 @@ const demoSteps = [
     image: "/Is-invoice-yes.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "Click Yes to start importing data from the Excel template into TallyPrime.",
     delay: 200,
-    // Bubble highlight (default highlightType) on Yes button
+    audioSrc: "/audio/Step25.mp3",
+    highlightType: "none",
     highlight: {
-      x: 845,  // Yes button x position (estimated - right side)
-      y: 397,   // Yes button y position (estimated - center)
-      width: 70,
-      height: 30
+      x: 280,  // Yes button area (popup)
+      y: 210,  // Yes button area y position
+      width: 725,
+      height: 140
+    },
+    spotlightTutorial: {
+      title: "Confirm Import",
+      description: "Click Yes without changing anything. This starts importing the Excel template data into TallyPrime.",
+      position: "bottom-right"  // Card on the bottom-right
     }
   },
   {
@@ -516,14 +558,20 @@ const demoSteps = [
     image: "/Success.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "All 166 entries imported to TallyPrime with 0 errors. Continue to review them in TallyPrime.",
     delay: 200,
-    highlightType: "none",  // No bubble animation for this step
+    audioSrc: "/audio/Step26.mp3",
+    highlightType: "none",
     highlight: {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0
+      x: 460,   // Success summary modal area
+      y: 120,
+      width: 200,
+      height: 50
+    },
+    spotlightTutorial: {
+      title: "Import Successful",
+      description: "All 166 entries are imported into TallyPrime with zero errors. Proceed to TallyPrime to review these entries.",
+      position: "bottom"  // Card below the spotlight
     }
   },
   {
@@ -531,14 +579,21 @@ const demoSteps = [
     image: "/TallyPrime.png",
     imageWidth: 1280,  // Original image width
     imageHeight: 720,  // Original image height
-    instruction: "",
+    instruction: "TallyPrime now shows all 166 imported vouchers from TallyConnects. Review the totals in TallyPrime.",
     delay: 200,
-    // Highlight on Total row/box (at bottom) for right-side tooltip
+    audioSrc: "/audio/Step27.mp3",
+    highlightType: "none",
+    // Highlight on Total row/box (at bottom) for spotlight overlay
     highlight: {
-      x: 450,   // Total box x position (left side of the box)
-      y: 665,   // Total box y position (bottom of screen)
-      width: 100,  // Width of the Total box
-      height: 35   // Height of the Total box
+      x: 5,
+      y: 75,
+      width: 560,
+      height: 620
+    },
+    spotlightTutorial: {
+      title: "Vouchers in TallyPrime",
+      description: "All 166 vouchers have been successfully imported into TallyPrime via TallyConnects with zero errors. Review the totals shown here to confirm the import. Every entry from the PDF has been imported through TallyConnects and is now ready to be used in TallyPrime.",
+      position: "right"
     }
   }
 ];

@@ -94,6 +94,12 @@ const InstructionCard = ({
     arrowX = cardWidth / 2 - arrowSize;
     arrowY = -arrowSize;
     arrowRotation = 0;
+  } else if (position === "bottom-right") {
+    cardX = spotX + spotWidth + gap;
+    cardY = spotY + spotHeight + gap;
+    arrowX = arrowSize;
+    arrowY = -arrowSize;
+    arrowRotation = 0;
   } else if (position === "top") {
     cardX = spotX + spotWidth / 2 - cardWidth / 2;
     cardY = spotY - estimatedCardHeight - gap;

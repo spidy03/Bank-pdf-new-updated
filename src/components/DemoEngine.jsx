@@ -464,6 +464,7 @@ const DemoEngine = () => {
 
   // small horizontal adjustment to shift highlight/notification slightly left
   const H = currentStep.highlight || { x: 0, y: 0, width: 0, height: 0 };
+  const step21Highlight = demoSteps.find((s) => s.id === 21)?.highlight || null;
   const SHIFT_LEFT = 0; // No shift needed with new positioning
 
   // Calculate current step index for display
@@ -515,6 +516,14 @@ const DemoEngine = () => {
       height: highlightRight.height * scaleY,
     }
     : null;
+
+  const spotlightHoles =
+    currentStep.id === 20 && step21Highlight
+      ? [
+        { x: step21Highlight.x, y: step21Highlight.y, width: step21Highlight.width, height: step21Highlight.height },
+        { x: H.x, y: H.y, width: H.width, height: H.height },
+      ]
+      : [{ x: H.x, y: H.y, width: H.width, height: H.height }];
 
   // Calculate actual image dimensions when image loads
   const handleImageLoad = (event) => {
@@ -965,14 +974,17 @@ const DemoEngine = () => {
           {/* Spotlight Tutorial for spotlight-enabled steps */}
           {showBubble && currentStep.spotlightTutorial && (
             <>
-              <SpotlightOverlay
-                x={H.x}
-                y={H.y}
-                width={H.width}
-                height={H.height}
-                scaleX={scaleX}
-                scaleY={scaleY}
-              />
+              {!currentStep.spotlightTutorial.disableOverlay && (
+                <SpotlightOverlay
+                  x={spotlightHoles[0].x}
+                  y={spotlightHoles[0].y}
+                  width={spotlightHoles[0].width}
+                  height={spotlightHoles[0].height}
+                  holes={spotlightHoles}
+                  scaleX={scaleX}
+                  scaleY={scaleY}
+                />
+              )}
               <InstructionCard
                 title={currentStep.spotlightTutorial.title}
                 description={currentStep.spotlightTutorial.description}
@@ -987,7 +999,7 @@ const DemoEngine = () => {
                     : currentStep.id === 17
                       ? 40 // 20px base + 20px extra for step 17
                       : currentStep.id === 20
-                        ? 380 // push card further right/up for step 20 top-right placement
+                        ? 380 // expanded spacing for step 20
                         : 0
                 }
                 x={H.x}
@@ -1218,7 +1230,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 23 - Bank Statement Selection (top position, instruction style) */}
-          {showBubble && currentStep.id === 23 && (
+          {showBubble && currentStep.id === 23 && currentStep.highlightType !== "none" && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1233,8 +1245,8 @@ const DemoEngine = () => {
             />
           )}
 
-          {/* Tooltip for Step 24 - Open Button (below position, instruction style) */}
-          {showBubble && currentStep.id === 24 && (
+          {/* Tooltip for Step 24 - removed per configuration (spotlight card only) */}
+          {false && showBubble && currentStep.id === 24 && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1249,8 +1261,8 @@ const DemoEngine = () => {
             />
           )}
 
-          {/* Tooltip for Step 25 - Yes Button (below position, instruction style) */}
-          {showBubble && currentStep.id === 25 && (
+          {/* Tooltip for Step 25 - removed (using spotlight card) */}
+          {false && showBubble && currentStep.id === 25 && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -1266,7 +1278,7 @@ const DemoEngine = () => {
           )}
 
           {/* Tooltip for Step 27 - Tally Prime Total Box (right position, instruction style) */}
-          {showBubble && currentStep.id === 27 && (
+          {showBubble && currentStep.id === 27 && currentStep.highlightType !== "none" && (
             <Tooltip
               x={adjHighlight.x}
               y={adjHighlight.y}
