@@ -5,7 +5,7 @@ const demoSteps = [
     image: "/dashboard.png",
     imageWidth: 1280,
     imageHeight: 720,
-    instruction: "Bank PDF Statement to Tally Demo",
+    instruction: "Bank PDF Demo",
     delay: 500,
     highlight: {
       x: 0,
@@ -16,7 +16,7 @@ const demoSteps = [
     highlightType: "none",
     isPopupOnly: true,
     popupType: "welcome",
-    title: "Bank PDF Statement to Tally Demo",
+    title: "Bank PDF Demo",
     message:
       "A powerful PDF bank statement converter with precision and flexibility:\n\n✓ Custom page & area selection for accurate conversion\n✓ Smart transaction table detection and extraction\n✓ Auto-detect ledger names from transaction narration\n✓ Auto-identify voucher type (Receipt, Payment, Contra)\n\nLet's explore how to seamlessly convert your bank statements into TallyPrime with TallyConnects Bank-PDF Template.",
     buttonText: "Start Demo",
@@ -583,9 +583,8 @@ const demoSteps = [
     delay: 200,
     audioSrc: "/audio/Step27.mp3",
     highlightType: "none",
-    // Highlight on Total row/box (at bottom) for spotlight overlay
     highlight: {
-      x: 5,
+      x: 10,
       y: 75,
       width: 560,
       height: 620

@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import demoSteps from "../data/demoSteps";
 import HighlightBox from "./HighlightBox";
 import BorderHighlight from "./BorderHighlight";
-import Tooltip from "./Tooltip";
 import AlertPopup from "./AlertPopup";
 import AudioChoiceNotification from "./AudioChoiceNotification";
 import CompletionBanner from "./CompletionBanner";
@@ -12,20 +11,19 @@ import InstructionCard from "./InstructionCard";
 
 const DemoEngine = () => {
   const [currentStep, setCurrentStep] = useState(demoSteps[0]);
-  const [showBubble, setShowBubble] = useState(false);
   const [inactivityTimeout, setInactivityTimeout] = useState(null);
   const [containerRef, setContainerRef] = useState(null);
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
-  const [showTooltip1, setShowTooltip1] = useState(false);
-  const [showTooltip2, setShowTooltip2] = useState(false);
-  const [showTooltip3, setShowTooltip3] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [showSpotlight, setShowSpotlight] = useState(false); // Delayed spotlight rendering
 
   // Step 0 audio choice and typing states
   const [step0AudioChoiceMade, setStep0AudioChoiceMade] = useState(false);
   const [allowAlertTyping, setAllowAlertTyping] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [isStep0AudioComplete, setIsStep0AudioComplete] = useState(false);
+  const [isLastStepAudioComplete, setIsLastStepAudioComplete] = useState(false);
   const audioRef = useRef(null);
 
   // Advanced frame controls state
@@ -39,10 +37,24 @@ const DemoEngine = () => {
   const touchStartX = useRef(null);
   const previousStepRef = useRef(null);
 
+  // Delay spotlight/instruction card render by 0.5 seconds when step changes
+  useEffect(() => {
+    // Hide spotlight immediately when step changes
+    setShowSpotlight(false);
+
+    // Show spotlight after 0.5 second delay
+    const timer = setTimeout(() => {
+      setShowSpotlight(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [currentStep.id]);
+
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
+
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -62,12 +74,25 @@ const DemoEngine = () => {
   useEffect(() => {
     const handlePlay = () => setIsAudioPlaying(true);
     const handlePause = () => setIsAudioPlaying(false);
-    const handleEnded = () => setIsAudioPlaying(false);
+    const handleEnded = () => {
+      setIsAudioPlaying(false);
+      // Mark step 0 audio as complete when it ends
+      if (currentStep.id === 0) {
+        setIsStep0AudioComplete(true);
+      }
+      // Mark last step audio as complete when it ends
+      const currentStepIdx = demoSteps.findIndex(s => s.id === currentStep.id);
+      if (currentStepIdx === demoSteps.length - 1) {
+        setIsLastStepAudioComplete(true);
+      }
+    };
+    let audioEl = null;
 
     // Use a small delay to ensure audio element is mounted
     const checkAudioInterval = setInterval(() => {
       const audio = audioRef.current;
       if (audio) {
+        audioEl = audio;
         audio.addEventListener("play", handlePlay);
         audio.addEventListener("pause", handlePause);
         audio.addEventListener("ended", handleEnded);
@@ -83,11 +108,10 @@ const DemoEngine = () => {
     return () => {
       clearInterval(checkAudioInterval);
       clearTimeout(timeout);
-      const audio = audioRef.current;
-      if (audio) {
-        audio.removeEventListener("play", handlePlay);
-        audio.removeEventListener("pause", handlePause);
-        audio.removeEventListener("ended", handleEnded);
+      if (audioEl) {
+        audioEl.removeEventListener("play", handlePlay);
+        audioEl.removeEventListener("pause", handlePause);
+        audioEl.removeEventListener("ended", handleEnded);
       }
     };
   }, [currentStep]);
@@ -138,10 +162,6 @@ const DemoEngine = () => {
 
       // Reset all UI states
       setShowCompletion(false);
-      setShowBubble(false);
-      setShowTooltip1(false);
-      setShowTooltip2(false);
-      setShowTooltip3(false);
       setShowKeyboardHints(false);
       setShowCopyNotification(false);
       setIsAudioPlaying(false);
@@ -157,9 +177,9 @@ const DemoEngine = () => {
     }
   };
 
-  const toggleKeyboardHints = () => {
-    setShowKeyboardHints(!showKeyboardHints);
-  };
+  const toggleKeyboardHints = useCallback(() => {
+    setShowKeyboardHints((prev) => !prev);
+  }, []);
 
   // Touch gesture support for mobile
   const handleTouchStart = (e) => {
@@ -206,27 +226,24 @@ const DemoEngine = () => {
   }, []);
 
   useEffect(() => {
-    // reset bubble then show after configured delay
-    setShowBubble(false);
-    setShowTooltip1(false);
-    setShowTooltip2(false);
-    setShowTooltip3(false);
-
     // Reset Step 0 states when returning to step 0
     if (currentStep.id === 0) {
       setStep0AudioChoiceMade(false);
       setAllowAlertTyping(false);
       setIsTypingComplete(false);
-      // Stop and reset audio
+      setIsStep0AudioComplete(false);
+      setIsLastStepAudioComplete(false);
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
         setIsAudioPlaying(false);
       }
     }
-
-    const t = setTimeout(() => setShowBubble(true), currentStep.delay);
-    return () => clearTimeout(t);
+    // Reset last step audio state when navigating away from last step
+    const currentStepIdx = demoSteps.findIndex(s => s.id === currentStep.id);
+    if (currentStepIdx !== demoSteps.length - 1) {
+      setIsLastStepAudioComplete(false);
+    }
   }, [currentStep]);
 
   // Auto-manage per-step audio: pause prior audio and autoplay when a step defines audioSrc (except step 0 which is opt-in)
@@ -273,52 +290,65 @@ const DemoEngine = () => {
     };
   }, [currentStep]);
 
-  // Step 17 tooltip timing
+  // Auto-advance after text animation plus 15 seconds (except on last step and step 0)
   useEffect(() => {
-    if (currentStep.id !== 17 || !showBubble) return;
+    // Don't auto-advance on the last step - wait for user to click Finish
+    const currentStepIndex = demoSteps.findIndex(s => s.id === currentStep.id);
+    const isLastStep = currentStepIndex === demoSteps.length - 1;
 
-    // Show tooltip 1 immediately
-    setShowTooltip1(true);
+    if (isLastStep) {
+      return; // No auto-advance on last step
+    }
 
-    // Show tooltip 2 after 2.5 seconds
-    const t2 = setTimeout(() => {
-      setShowTooltip2(true);
-    }, 2500);
-
-    // Show tooltip 3 after 5 seconds
-    const t3 = setTimeout(() => {
-      setShowTooltip3(true);
-    }, 5000);
-
-    return () => {
-      clearTimeout(t2);
-      clearTimeout(t3);
-    };
-  }, [currentStep, showBubble]);
-
-  // Auto-advance after 10 seconds of inactivity
-  useEffect(() => {
-    if (!showBubble) {
-      // Clear timeout if bubble is hidden
-      if (inactivityTimeout) {
-        clearTimeout(inactivityTimeout);
-        setInactivityTimeout(null);
-      }
+    // For step 0, don't use this auto-advance - use the typing complete effect instead
+    if (currentStep.id === 0) {
       return;
     }
 
-    // Set 10-second timeout to auto-advance
+    const animationDelay = currentStep.delay || 0;
     const timeout = setTimeout(() => {
       goNext();
-    }, 1000000);
+    }, animationDelay + 10000);
 
     setInactivityTimeout(timeout);
 
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showBubble, currentStep]);
+  }, [currentStep]);
 
-  const goNext = () => {
+  // Auto-advance for step 0: Wait 10 seconds after BOTH typing AND audio complete
+  useEffect(() => {
+    if (currentStep.id !== 0) return;
+    // Wait for both typing and audio to complete
+    if (!isTypingComplete || !isStep0AudioComplete) return;
+
+    const timeout = setTimeout(() => {
+      goNext();
+    }, 10000); // 10 seconds after both typing and audio complete
+
+    setInactivityTimeout(timeout);
+
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStep.id, isTypingComplete, isStep0AudioComplete]);
+
+  // Auto-show completion banner for last step: Wait 10 seconds after audio completes
+  useEffect(() => {
+    const currentStepIdx = demoSteps.findIndex(s => s.id === currentStep.id);
+    const isLastStep = currentStepIdx === demoSteps.length - 1;
+
+    if (!isLastStep) return;
+    if (!isLastStepAudioComplete) return;
+    if (showCompletion) return; // Already showing
+
+    const timeout = setTimeout(() => {
+      setShowCompletion(true);
+    }, 10000); // 10 seconds after audio completes
+
+    return () => clearTimeout(timeout);
+  }, [currentStep.id, isLastStepAudioComplete, showCompletion]);
+
+  const goNext = useCallback(() => {
     // Clear inactivity timeout when user clicks
     if (inactivityTimeout) {
       clearTimeout(inactivityTimeout);
@@ -331,7 +361,6 @@ const DemoEngine = () => {
     if (currentStepIndex < demoSteps.length - 1) {
       const next = demoSteps[currentStepIndex + 1];
       // hide current UI, navigate, push history so Back/Forward work
-      setShowBubble(false);
       setCurrentStep(next);
       try {
         window.history.pushState({ stepId: next.id }, "", `?step=${next.id}`);
@@ -342,9 +371,9 @@ const DemoEngine = () => {
       // Show completion banner when demo is finished
       setShowCompletion(true);
     }
-  };
+  }, [currentStep, inactivityTimeout]);
 
-  const goPrevious = () => {
+  const goPrevious = useCallback(() => {
     // Clear inactivity timeout when user clicks
     if (inactivityTimeout) {
       clearTimeout(inactivityTimeout);
@@ -357,7 +386,6 @@ const DemoEngine = () => {
     if (currentStepIndex > 0) {
       const previous = demoSteps[currentStepIndex - 1];
       // hide current UI, navigate, push history so Back/Forward work
-      setShowBubble(false);
       setCurrentStep(previous);
       try {
         window.history.pushState(
@@ -369,7 +397,7 @@ const DemoEngine = () => {
         /* ignore */
       }
     }
-  };
+  }, [currentStep, inactivityTimeout]);
 
   // Handle Back/Forward browser navigation
   useEffect(() => {
@@ -386,7 +414,6 @@ const DemoEngine = () => {
       if (stepId) {
         const step = demoSteps.find((d) => d.id === stepId);
         if (step) {
-          setShowBubble(false);
           setCurrentStep(step);
           // Ensure history state is correct
           window.history.replaceState(
@@ -460,7 +487,7 @@ const DemoEngine = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentStep, showCompletion, isFullscreen]);
+  }, [currentStep, showCompletion, isFullscreen, goNext, goPrevious, toggleKeyboardHints]);
 
   // small horizontal adjustment to shift highlight/notification slightly left
   const H = currentStep.highlight || { x: 0, y: 0, width: 0, height: 0 };
@@ -486,16 +513,6 @@ const DemoEngine = () => {
   };
 
   // For step 2, handle expiration date highlight
-  const expHighlight = currentStep.expirationHighlight || null;
-  const adjExpHighlight = expHighlight
-    ? {
-      x: Math.max(0, expHighlight.x * scaleX),
-      y: expHighlight.y * scaleY,
-      width: expHighlight.width * scaleX,
-      height: expHighlight.height * scaleY,
-    }
-    : null;
-
   // For step 17, handle dual highlights (left and right)
   const highlightLeft = currentStep.highlightLeft || null;
   const adjHighlightLeft = highlightLeft
@@ -534,6 +551,22 @@ const DemoEngine = () => {
       setImageHeight(img.offsetHeight);
     }
   };
+
+  // Recalculate dimensions when step changes
+  useEffect(() => {
+    // Small delay to ensure image has loaded
+    const timer = setTimeout(() => {
+      if (containerRef) {
+        const img = containerRef.querySelector("img");
+        if (img && img.complete && img.offsetWidth > 0) {
+          setImageWidth(img.offsetWidth);
+          setImageHeight(img.offsetHeight);
+        }
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [currentStep.id, containerRef]);
 
   // Update dimensions on window resize
   useEffect(() => {
@@ -634,17 +667,17 @@ const DemoEngine = () => {
               height={isMobile ? "14" : "16"}
               viewBox="0 0 24 24"
               fill="none"
-              stroke={currentStep.id === 1 || showCompletion ? "#cbd5e1" : "#64748b"}
+              stroke={currentStep.id === 0 || showCompletion ? "#cbd5e1" : "#64748b"}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               style={{
-                cursor: currentStep.id === 1 || showCompletion ? "not-allowed" : "pointer",
-                opacity: currentStep.id === 1 || showCompletion ? 0.4 : 1,
+                cursor: currentStep.id === 0 || showCompletion ? "not-allowed" : "pointer",
+                opacity: currentStep.id === 0 || showCompletion ? 0.4 : 1,
                 transition: "all 0.2s"
               }}
               onClick={() => {
-                if (currentStep.id !== 1 && !showCompletion) {
+                if (currentStep.id !== 0 && !showCompletion) {
                   goPrevious();
                 }
               }}
@@ -657,17 +690,17 @@ const DemoEngine = () => {
               height={isMobile ? "14" : "16"}
               viewBox="0 0 24 24"
               fill="none"
-              stroke={currentStepIndex === demoSteps.length - 1 || showCompletion ? "#cbd5e1" : "#64748b"}
+              stroke={currentStep.id === 0 || currentStepIndex === demoSteps.length - 1 || showCompletion ? "#cbd5e1" : "#64748b"}
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               style={{
-                cursor: currentStepIndex === demoSteps.length - 1 || showCompletion ? "not-allowed" : "pointer",
-                opacity: currentStepIndex === demoSteps.length - 1 || showCompletion ? 0.4 : 1,
+                cursor: currentStep.id === 0 || currentStepIndex === demoSteps.length - 1 || showCompletion ? "not-allowed" : "pointer",
+                opacity: currentStep.id === 0 || currentStepIndex === demoSteps.length - 1 || showCompletion ? 0.4 : 1,
                 transition: "all 0.2s"
               }}
               onClick={() => {
-                if (currentStepIndex < demoSteps.length - 1 && !showCompletion) {
+                if (currentStep.id !== 0 && currentStepIndex < demoSteps.length - 1 && !showCompletion) {
                   goNext();
                 }
               }}
@@ -907,7 +940,7 @@ const DemoEngine = () => {
           />
 
           {/* Highlight (shifted left slightly) */}
-          {showBubble && currentStep.highlightType === "border" && (
+          {currentStep.highlightType === "border" && (
             <BorderHighlight
               x={adjHighlight.x}
               y={adjHighlight.y}
@@ -919,7 +952,7 @@ const DemoEngine = () => {
           )}
 
           {/* ==================== STEP 0: AUDIO CHOICE NOTIFICATION ==================== */}
-          {showBubble && currentStep.id === 0 && currentStep.showAudioNotification && currentStep.audioSrc && !step0AudioChoiceMade && (
+          {currentStep.id === 0 && currentStep.showAudioNotification && currentStep.audioSrc && !step0AudioChoiceMade && (
             <AudioChoiceNotification
               audioSrc={currentStep.audioSrc}
               onPlayAudio={() => {
@@ -937,13 +970,14 @@ const DemoEngine = () => {
               onSkipAudio={() => {
                 setStep0AudioChoiceMade(true);
                 setAllowAlertTyping(true);
+                setIsStep0AudioComplete(true); // Mark audio as complete when skipped
                 console.log("Audio skipped by user");
               }}
             />
           )}
 
           {/* ==================== STEP 0: WELCOME POPUP WITH AUTO-NARRATION ==================== */}
-          {showBubble && currentStep.id === 0 && (
+          {currentStep.id === 0 && (
             <div
               style={{
                 opacity: allowAlertTyping ? 1 : 0,
@@ -954,7 +988,7 @@ const DemoEngine = () => {
             >
               <AlertPopup
                 key={`alert-${currentStep.id}`}
-                title={currentStep.title || "Welcome to PDF to Tally Demo"}
+                title={currentStep.title || "Welcome to Bank PDF Demo"}
                 message={
                   currentStep.message ||
                   "PDF to Tally is a powerful tool that converts your PDF bank statements into Tally format automatically."
@@ -971,8 +1005,8 @@ const DemoEngine = () => {
             </div>
           )}
 
-          {/* Spotlight Tutorial for spotlight-enabled steps */}
-          {showBubble && currentStep.spotlightTutorial && (
+          {/* Spotlight Tutorial for spotlight-enabled steps (with 0.5s delay) */}
+          {currentStep.spotlightTutorial && showSpotlight && (
             <>
               {!currentStep.spotlightTutorial.disableOverlay && (
                 <SpotlightOverlay
@@ -990,6 +1024,7 @@ const DemoEngine = () => {
                 description={currentStep.spotlightTutorial.description}
                 onPrevious={goPrevious}
                 onNext={goNext}
+                onFinish={() => setShowCompletion(true)}
                 currentStep={currentStepIndex + 1}
                 totalSteps={demoSteps.length}
                 position={currentStep.spotlightTutorial.position}
@@ -1000,7 +1035,9 @@ const DemoEngine = () => {
                       ? 40 // 20px base + 20px extra for step 17
                       : currentStep.id === 20
                         ? 380 // expanded spacing for step 20
-                        : 0
+                        : currentStep.id === 27
+                          ? 5 // extra spacing for step 27
+                          : 0
                 }
                 x={H.x}
                 y={H.y}
@@ -1017,8 +1054,7 @@ const DemoEngine = () => {
           )}
 
           {/* Regular Highlight (bubble animation) for Steps 3+ (skip steps with spotlight/card) */}
-          {showBubble &&
-            currentStep.id > 2 &&
+          {currentStep.id > 2 &&
             (!currentStep.highlightType ||
               (currentStep.highlightType !== "border" &&
                 currentStep.highlightType !== "none")) && (
@@ -1029,269 +1065,6 @@ const DemoEngine = () => {
                 height={adjHighlight.height}
               />
             )}
-
-          {/* Tooltip for Step 3 - Open PDF Converter (below position) */}
-          {showBubble && currentStep.id === 3 && currentStep.highlightType !== "none" && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click Here to Open Converter"
-              position="below"
-              stepId={3}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 4 - Browse Button (left position) */}
-          {showBubble && currentStep.id === 4 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click here to select file"
-              position="left"
-              stepId={4}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 5 - File Selection Border (right position, instruction style) */}
-          {showBubble && currentStep.id === 5 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Select File"
-              position="right"
-              stepId={5}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 6 - Open Button (below position) */}
-          {showBubble && currentStep.id === 6 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to Open PDF"
-              position="below"
-              stepId={6}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 7 - Import Button (right position) */}
-          {showBubble && currentStep.id === 7 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to Import PDF"
-              position="right"
-              stepId={7}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 8 - Autodetect Tables button (below position) */}
-          {showBubble && currentStep.id === 8 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to Autodetect Tables"
-              position="below"
-              stepId={8}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 15 - Import PDF Bank data Button (top position) */}
-          {showBubble && currentStep.id === 15 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to import data"
-              position="top"
-              stepId={15}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 16 - OK Button (left position) */}
-          {showBubble && currentStep.id === 16 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click OK to continue"
-              position="left"
-              stepId={16}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip 1 for Step 17 - Description column (right position) */}
-          {showBubble &&
-            currentStep.id === 17 &&
-            showTooltip1 &&
-            adjHighlightLeft && (
-              <Tooltip
-                x={adjHighlightLeft.x}
-                y={adjHighlightLeft.y}
-                width={adjHighlightLeft.width}
-                height={adjHighlightLeft.height}
-                text="Check Description Here"
-                position="right"
-                stepId="17-1"
-                scaleX={scaleX}
-                scaleY={scaleY}
-              />
-            )}
-
-          {/* Tooltip 2 for Step 17 - Ledger Name column (left position) */}
-          {showBubble &&
-            currentStep.id === 17 &&
-            showTooltip2 &&
-            adjHighlightRight && (
-              <Tooltip
-                x={adjHighlightRight.x}
-                y={adjHighlightRight.y}
-                width={adjHighlightRight.width}
-                height={adjHighlightRight.height}
-                text="We have Successfully extracted party names based on description"
-                position="left"
-                stepId="17-2"
-                scaleX={scaleX}
-                scaleY={scaleY}
-              />
-            )}
-
-          {/* Tooltip 3 for Step 17 - Ledger Name column (left position, clickable) */}
-          {showBubble &&
-            currentStep.id === 17 &&
-            showTooltip3 &&
-            adjHighlightRight && (
-              <Tooltip
-                x={adjHighlightRight.x}
-                y={adjHighlightRight.y}
-                width={adjHighlightRight.width}
-                height={adjHighlightRight.height}
-                text="Click here to Verify and Continue"
-                position="left"
-                stepId="17-3"
-                scaleX={scaleX}
-                scaleY={scaleY}
-                onNext={goNext}
-              />
-            )}
-
-          {/* Tooltip for Step 18 - Create Receipt /Payment Vouchers Button (left position with right arrow) */}
-          {showBubble && currentStep.id === 18 && !currentStep.spotlightTutorial && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to create voucher"
-              position="left"
-              stepId={18}
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 23 - Bank Statement Selection (top position, instruction style) */}
-          {showBubble && currentStep.id === 23 && currentStep.highlightType !== "none" && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Select this Option"
-              position="top"
-              stepId="23-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 24 - removed per configuration (spotlight card only) */}
-          {false && showBubble && currentStep.id === 24 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click on Open"
-              position="below"
-              stepId="24-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 25 - removed (using spotlight card) */}
-          {false && showBubble && currentStep.id === 25 && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to continue"
-              position="below"
-              stepId="25-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
-
-          {/* Tooltip for Step 27 - Tally Prime Total Box (right position, instruction style) */}
-          {showBubble && currentStep.id === 27 && currentStep.highlightType !== "none" && (
-            <Tooltip
-              x={adjHighlight.x}
-              y={adjHighlight.y}
-              width={adjHighlight.width}
-              height={adjHighlight.height}
-              text="Click to Continue"
-              position="right"
-              stepId="27-1"
-              scaleX={scaleX}
-              scaleY={scaleY}
-              onNext={goNext}
-            />
-          )}
 
           {/* Comment box at bottom-center */}
           {/* {showBubble && (
@@ -1305,7 +1078,7 @@ const DemoEngine = () => {
           )} */}
 
           {/* Clickable overlay on highlighted area (replaces Next button). */}
-          {showBubble && adjHighlight && (
+          {adjHighlight && (
             <div
               onClick={goNext}
               style={{
@@ -1333,6 +1106,7 @@ const DemoEngine = () => {
           right: "0",
           width: "100%",
           zIndex: 100,
+          display: "none",
         }}
       >
         <NavigationBar

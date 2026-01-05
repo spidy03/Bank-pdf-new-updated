@@ -5,6 +5,7 @@ const InstructionCard = ({
   description,
   onPrevious,
   onNext,
+  onFinish,
   currentStep,
   totalSteps,
   position = "bottom",
@@ -82,65 +83,33 @@ const InstructionCard = ({
 
   let cardX = 0;
   let cardY = 0;
-  let arrowX = 0;
-  let arrowY = 0;
-  let arrowRotation = 0;
 
   const gap = 20 + gapOffset;
 
   if (position === "bottom") {
     cardX = spotX + spotWidth / 2 - cardWidth / 2;
     cardY = spotY + spotHeight + gap;
-    arrowX = cardWidth / 2 - arrowSize;
-    arrowY = -arrowSize;
-    arrowRotation = 0;
   } else if (position === "bottom-right") {
     cardX = spotX + spotWidth + gap;
     cardY = spotY + spotHeight + gap;
-    arrowX = arrowSize;
-    arrowY = -arrowSize;
-    arrowRotation = 0;
   } else if (position === "top") {
     cardX = spotX + spotWidth / 2 - cardWidth / 2;
     cardY = spotY - estimatedCardHeight - gap;
-    arrowX = cardWidth / 2 - arrowSize;
-    arrowY = "100%";
-    arrowRotation = 180;
   } else if (position === "top-right") {
     cardX = spotX + spotWidth - cardWidth + gap;
     cardY = spotY - estimatedCardHeight - gap;
-    arrowX = cardWidth - arrowSize * 2;
-    arrowY = "100%";
-    arrowRotation = 180;
   } else if (position === "left") {
     cardX = spotX - cardWidth - gap;
     cardY = spotY + spotHeight / 2 - estimatedCardHeight / 2;
-    arrowX = cardWidth - 2;
-    arrowY = estimatedCardHeight / 2 - arrowSize;
-    arrowRotation = 90;
   } else if (position === "right") {
     cardX = spotX + spotWidth + gap;
     cardY = spotY + spotHeight / 2 - estimatedCardHeight / 2;
-    arrowX = -arrowSize - 2;
-    arrowY = estimatedCardHeight / 2 - arrowSize;
-    arrowRotation = -90;
   }
 
   const maxX = containerWidth ? containerWidth - cardWidth - 12 : cardX;
   const maxY = containerHeight ? containerHeight - estimatedCardHeight - 12 : cardY;
   const clampedX = containerWidth ? clamp(cardX, 12, Math.max(12, maxX)) : cardX;
   const clampedY = containerHeight ? clamp(cardY, 12, Math.max(12, maxY)) : cardY;
-
-  const offsetX = cardX - clampedX;
-  const offsetY = cardY - clampedY;
-
-  const adjustedArrowX = typeof arrowX === "number"
-    ? clamp(arrowX - offsetX, 12, cardWidth - 12)
-    : arrowX;
-
-  const adjustedArrowY = typeof arrowY === "number"
-    ? clamp(arrowY - offsetY, 12, estimatedCardHeight - 12)
-    : arrowY;
 
   return (
     <div
@@ -230,22 +199,21 @@ const InstructionCard = ({
             </button>
 
             <button
-              onClick={onNext}
-              disabled={isLastStep}
+              onClick={isLastStep ? onFinish : onNext}
               style={{
                 flex: "1",
                 width: isNarrow ? "100%" : "auto",
                 padding: "10px 16px",
-                background: isLastStep ? "#cbd5e1" : "#2563eb",
+                background: isLastStep ? "linear-gradient(135deg, #10b981 0%, #059669 100%)" : "#2563eb",
                 color: "#ffffff",
                 border: "none",
                 borderRadius: "10px",
                 fontSize: "clamp(13.5px, 1.7vw, 14.5px)",
                 fontWeight: "700",
-                cursor: isLastStep ? "not-allowed" : "pointer",
+                cursor: "pointer",
                 letterSpacing: "0.3px",
                 transition: "all 0.2s ease",
-                boxShadow: isLastStep ? "none" : "0 12px 30px rgba(37,99,235,0.25)",
+                boxShadow: isLastStep ? "0 12px 30px rgba(16,185,129,0.3)" : "0 12px 30px rgba(37,99,235,0.25)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -253,20 +221,25 @@ const InstructionCard = ({
                 fontFamily: "'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif",
               }}
               onMouseEnter={(e) => {
-                if (!isLastStep) {
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                  e.currentTarget.style.boxShadow = "0 14px 36px rgba(37,99,235,0.3)";
-                }
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = isLastStep
+                  ? "0 14px 36px rgba(16,185,129,0.4)"
+                  : "0 14px 36px rgba(37,99,235,0.3)";
               }}
               onMouseLeave={(e) => {
-                if (!isLastStep) {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 12px 30px rgba(37,99,235,0.25)";
-                }
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = isLastStep
+                  ? "0 12px 30px rgba(16,185,129,0.3)"
+                  : "0 12px 30px rgba(37,99,235,0.25)";
               }}
             >
-              {isLastStep ? "Finish" : "Next"}
-              {!isLastStep && (
+              {isLastStep ? "Finish Demo" : "Next"}
+              {isLastStep ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
+              ) : (
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
